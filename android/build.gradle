@@ -1,34 +1,33 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+
 buildscript {
     ext {
-        // NOTE: The provided logs did not contain the specific error message for 'BUILD FAILED'.
-        // This fix addresses common causes related to Kotlin/Gradle version mismatches or outdated plugin configurations.
-        // Adjust these versions to be compatible with your specific React Native version and project requirements.
+        // The provided logs are truncated and do not explicitly state the root cause
+        // of the build failure. However, a common reason for generic Gradle build
+        // failures in React Native, especially with newer Gradle versions (like 8.3
+        // observed in logs), is a mismatch or outdated Kotlin Gradle plugin version
+        // or Android Gradle Plugin (AGP) version.
+        // We're providing a common update to these versions. Please ensure these
+        // versions are compatible with your specific React Native version (e.g., RN 0.70+).
 
-        buildToolsVersion = "34.0.0" // Update to your desired Android SDK Build Tools version
+        buildToolsVersion = "33.0.0" // Adjust if your project uses a different target SDK
         minSdkVersion = 21
-        compileSdkVersion = 34 // Update to your desired Android SDK Compile version
-        targetSdkVersion = 34  // Update to your desired Android SDK Target version
+        compileSdkVersion = 33      // Recommended for Gradle 8.x
+        targetSdkVersion = 33       // Recommended for Gradle 8.x
+        ndkVersion = "25.1.8751475" // Example NDK version
 
-        // Define a modern, compatible Kotlin version.
-        // For Gradle 8.x and AGP 8.x, Kotlin 1.8.x or 1.9.x are generally compatible.
-        // If issues persist, consider trying '1.8.20' or '1.8.0'.
-        kotlinVersion = "1.9.0"
-
-        // Define a compatible Android Gradle Plugin (AGP) version.
-        // For Gradle 8.3 (inferred from `caches/8.3` in the logs), AGP 8.1.x, 8.2.x, or 8.3.x are suitable.
-        // Check official compatibility matrix if needed.
-        androidGradlePluginVersion = "8.1.2"
+        // Update Kotlin version to a generally compatible one for Gradle 8.x
+        kotlin_version = '1.8.20'
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        // The Android Gradle plugin
-        classpath("com.android.tools.build:gradle:$androidGradlePluginVersion")
-        // The Kotlin Gradle plugin
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        // Ensure Android Gradle Plugin (AGP) is compatible with Gradle 8.x
+        // For Gradle 8.3, AGP 8.1.x or 8.2.x is typically used.
+        classpath("com.android.tools.build:gradle:8.1.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -36,15 +35,13 @@ buildscript {
 
 allprojects {
     repositories {
-        // Ensure these are present and in the correct order for dependency resolution.
-        // Jitpack is often needed for various React Native libraries.
-        maven { url( "https://www.jitpack.io" ) }
-        google()
         mavenCentral()
+        google()
+        // If you are using React Native version < 0.69
+        // maven { url "https://www.jitpack.io" }
     }
 }
 
-// Clean up task. Run `./gradlew clean` from the `android` directory.
-tasks.register("clean", Delete) {
+task clean(type: Delete) {
     delete rootProject.buildDir
 }
